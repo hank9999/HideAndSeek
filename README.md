@@ -20,10 +20,9 @@ This plugin has been heavily inspired from the gamemode "PropHunt", from the gam
 ## Support
 ||Link|
 |:--|:--|
-|**Issues/Tickets on GitHub**|[Click Here](https://github.com/Steffion/BlockHunt/issues/)|
-|**Telegram**|[Click Here](http://telegram.me/Steffion)|
-|**Dev-Bukkit comments**|[Click Here](http://dev.bukkit.org/bukkit-plugins/blockhunt/#comments)|
-|**E-mail**|[Click Here](mailto:steffion@icloud.com?subject=BlockHunt)|
+|**Issues/Tickets on GitHub**|[Click Here](https://github.com/EncryptSL/HideAndSeek/issues/)|
+|**Ask/FM**|[Click Here](https://ask.fm/EncryptSL)|
+|**E-mail**|[Click Here](mailto:rydlos123@gmail.com)|
 
 ## Features
 * Support for 1.13 Aquatic Update
