@@ -12,12 +12,8 @@ This plugin has been heavily inspired from the gamemode "PropHunt", from the gam
 **Download and try this plugin out for yourself!**
 
 ## Downloads
-|Branch|Plugin version|Compatiable Minecraft version|Build status|Download|
-|:--|:--|:--|:--|:--|
-|**Release (master)**|**v0.2.1**|**v1.9.2**|[![Build Status](http://jenkins.steffion.com/buildStatus/icon?job=BlockHunt)](http://jenkins.steffion.com/job/BlockHunt/)|[Bukkit Dev](http://dev.bukkit.org/bukkit-plugins/blockhunt/files/)|
-|Snapshot (dev)|v0.2.2-SNAPSHOT|v1.9.2|[![Build Status](http://jenkins.steffion.com/buildStatus/icon?job=BlockHunt-dev)](http://jenkins.steffion.com/job/BlockHunt-dev/)|[Jenkins](http://jenkins.steffion.com/job/BlockHunt-dev/)|
-|Old version (1.8)|v0.2.1-MC1.8.8|v1.8.8|[![Build Status](http://jenkins.steffion.com/buildStatus/icon?job=BlockHunt-1.8)](http://jenkins.steffion.com/job/BlockHunt-1.8/)|[Jenkins](http://jenkins.steffion.com/job/BlockHunt-1.8/)|
-|Recode (recode)|v0.3.0-ALPHA|v1.9.2|[![Build Status](http://jenkins.steffion.com/buildStatus/icon?job=BlockHunt-recode)](http://jenkins.steffion.com/job/BlockHunt-recode/)|[Jenkins](http://jenkins.steffion.com/job/BlockHunt-recode/)|
+
+## Comming Soon
 
 ### This plugin requires you to download and install two addinonal plugins! ([Lib's Disguises](https://www.spigotmc.org/resources/libs-disguises.81/) and [ProtocolLib](http://dev.bukkit.org/bukkit-plugins/protocollib/))
 
@@ -30,6 +26,7 @@ This plugin has been heavily inspired from the gamemode "PropHunt", from the gam
 |**E-mail**|[Click Here](mailto:steffion@icloud.com?subject=BlockHunt)|
 
 ## Features
+* Support for 1.13 Aquatic Update
 * Custom wand for selection arena.
 * Multiple arenas.
 * **Join/Leave signs!**
@@ -41,9 +38,6 @@ This plugin has been heavily inspired from the gamemode "PropHunt", from the gam
 * **Shop with tokens!**
 * Instant respawn.
 * **_And more!_**
-
-## MCStats
-[![](http://api.mcstats.org/signature/blockhunt.png)](http://mcstats.org/plugin/BlockHunt/)
 
 ## Commands & Permissions
 _**Note:** Instead of using /BlockHunt you could use:_
@@ -87,27 +81,11 @@ _**Note:** Instead of using /BlockHunt you could use:_
 ## How to set-up?
 Use this video to manage your way through the set-up phase!
 
-<a href="http://www.youtube.com/watch?feature=player_embedded&v=msPQ1UMiHWg
-" target="_blank"><img src="http://img.youtube.com/vi/msPQ1UMiHWg/0.jpg" 
-alt="" width="240" height="180" border="10" /></a>
-
-**Thanks to [Koz4Christ](https://www.youtube.com/user/koz4christ/) for this video!**
+## Comming soon
 
 ## Donate
 Do you have some spare money lying around? Support BlockHunt and donate, as this will give us more encouragement to produce new updates. It will also show us how interested people are in this plugin!
 
-[![](https://www.paypalobjects.com/en_US/GB/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=RWASM5GV7GYTU)
+[![](https://www.paypalobjects.com/en_US/GB/i/btn/btn_donateCC_LG.gif)](https://www.paypal.me/shadowlands)
 
 Thank you! <3
-
-## Try out recode 
-I am currently recoding the plugin and I would love to know if you like it.
-Suggest ideas or report bugs via the issues system.
-Go to my Jenkins and download the latest snapshot version.
-
-http://jenkins.steffion.com/job/BlockHunt-recode/
-
->**_Disclaimer_**
-> This plugin uses an auto update system, which means it will check for updates (this feature is perhaps broken at the moment). To disable this go to the config file and disable the auto-update feature. This plugin uses a Metrics system made by Hidendra, which means some information will be sent to MCStats.org and shown to the public. This data includes information such as the plugin's version, server versions, OS systems, Java version, etc. All data is sent to MCStats.org for analysis either by the public or plugin author. No personal data is taken from the server and if you want to opt-out of MCStats, go to your plugins folder, then go to the "PluginMetrics" folder (This folder is automatically created) and then set "opt-out" to true. More info can be found on MCStats.org. With this information, we can see how many people are using the current version of the plugin and its popularity so we know when to push for further updates.
-
-
