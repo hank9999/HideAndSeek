@@ -23,15 +23,15 @@ import org.EncryptSL.blockhunt.Serializables.LocationSerializable;
 @SuppressWarnings("deprecation")
 public class ArenaHandler {
 	public static void hidersWin(Arena arena) {
-		String hidersLeft = "";
+		StringBuilder hidersLeft = new StringBuilder();
 		
 		for (Player player : arena.playersInArena) {
 			if (!arena.seekers.contains(player)) {
-				hidersLeft += player.getName() + ", ";
+				hidersLeft.append(player.getName()).append(", ");
 			}
 		}
 		
-		hidersLeft = hidersLeft.substring(0, hidersLeft.length() - 2);
+		hidersLeft = new StringBuilder(hidersLeft.substring(0, hidersLeft.length() - 2));
 		
 		ArenaHandler.sendFMessage(arena, ConfigC.normal_winHiders, "names-" + hidersLeft);
 		for (Player player : arena.playersInArena) {
@@ -41,7 +41,7 @@ public class ArenaHandler {
 						Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
 								command.replaceAll("%player%", player.getName()));
 					}
-					if (W.config.getFile().getBoolean("vaultSupport") == true) {
+					if (W.config.getFile().getBoolean("vaultSupport")) {
 						if (BlockHunt.econ != null) {
 							if (arena.seekers.contains(player)) {
 								BlockHunt.econ.depositPlayer(player.getName(), arena.hidersTokenWin);
@@ -126,7 +126,7 @@ public class ArenaHandler {
 						}
 
 						LocationSerializable zero = new LocationSerializable(
-								Bukkit.getWorld(player.getWorld().getName().toString()), 0, 0, 0, 0, 0);
+								Bukkit.getWorld(player.getWorld().getName()), 0, 0, 0, 0, 0);
 						if ((arena.lobbyWarp != null) && (arena.hidersWarp != null) && (arena.seekersWarp != null)
 								&& (arena.spawnWarp != null)) {
 							if (!arena.lobbyWarp.equals(zero) && !arena.hidersWarp.equals(zero)
@@ -179,46 +179,65 @@ public class ArenaHandler {
 										}
 									}
 
-									if ((Boolean) W.config.get(ConfigC.shop_blockChooserv1Enabled) == true) {
+									if ((Boolean) W.config.get(ConfigC.shop_blockChooserv1Enabled)) {
 										if ((W.shop.getFile().get(player.getName() + ".blockchooser") != null)
 												|| PermissionsM.hasPerm(player, Permissions.shopblockchooser, false)) {
-											ItemStack shopBlockChooser = new ItemStack(
-													Material.getMaterial(
-															(String) W.config.get(ConfigC.shop_blockChooserv1IDname)),
-													1);
+
+											Material m = Material.getMaterial((String) W.config.get(ConfigC.shop_blockChooserv1IDname));
+
+											if (m == null) {
+												m = Material.STONE;
+											}
+
+											ItemStack shopBlockChooser = new ItemStack(m, 1);
 											ItemMeta shopBlockChooser_IM = shopBlockChooser.getItemMeta();
-											shopBlockChooser_IM.setDisplayName(MessageM.replaceAll(
-													(String) W.config.get(ConfigC.shop_blockChooserv1Name)));
-											List<String> lores = W.config.getFile()
-													.getStringList(ConfigC.shop_blockChooserv1Description.location);
-											List<String> lores2 = new ArrayList<String>();
+
+											if (shopBlockChooser_IM != null) {
+												shopBlockChooser_IM.setDisplayName(MessageM.replaceAll((String) W.config.get(ConfigC.shop_blockChooserv1Name)));
+											}
+
+											List<String> lores = W.config.getFile().getStringList(ConfigC.shop_blockChooserv1Description.location);
+											List<String> lores2 = new ArrayList<>();
 											for (String lore : lores) {
 												lores2.add(MessageM.replaceAll(lore));
 											}
-											shopBlockChooser_IM.setLore(lores2);
+
+											if (shopBlockChooser_IM != null) {
+												shopBlockChooser_IM.setLore(lores2);
+											}
+
 											shopBlockChooser.setItemMeta(shopBlockChooser_IM);
 
 											player.getInventory().addItem(shopBlockChooser);
 										}
 									}
 
-									if ((Boolean) W.config.get(ConfigC.shop_BlockHuntPassv2Enabled) == true) {
+									if ((Boolean) W.config.get(ConfigC.shop_BlockHuntPassv2Enabled)) {
 										if (W.shop.getFile().getInt(player.getName() + ".blockhuntpass") != 0) {
-											ItemStack shopBlockHuntPass = new ItemStack(
-													Material.getMaterial(
-															(String) W.config.get(ConfigC.shop_BlockHuntPassv2IDName)),
-													1);
+
+											Material m = Material.getMaterial((String) W.config.get(ConfigC.shop_BlockHuntPassv2IDName));
+
+											if (m == null) {
+												m = Material.STONE;
+											}
+
+											ItemStack shopBlockHuntPass = new ItemStack(m, 1);
 											ItemMeta shopBlockHuntPass_IM = shopBlockHuntPass.getItemMeta();
-											shopBlockHuntPass_IM.setDisplayName(MessageM.replaceAll(
-													(String) W.config.get(ConfigC.shop_BlockHuntPassv2Name)));
-											List<String> lores = W.config.getFile()
-													.getStringList(ConfigC.shop_BlockHuntPassv2Description.location);
-											List<String> lores2 = new ArrayList<String>();
+
+											if (shopBlockHuntPass_IM != null) {
+												shopBlockHuntPass_IM.setDisplayName(MessageM.replaceAll((String) W.config.get(ConfigC.shop_BlockHuntPassv2Name)));
+											}
+
+											List<String> lores = W.config.getFile().getStringList(ConfigC.shop_BlockHuntPassv2Description.location);
+											List<String> lores2 = new ArrayList<>();
 											for (String lore : lores) {
 												lores2.add(MessageM.replaceAll(lore));
 											}
 
-											shopBlockHuntPass_IM.setLore(lores2);
+											if (shopBlockHuntPass_IM != null) {
+												shopBlockHuntPass_IM.setLore(lores2);
+											}
+
 											shopBlockHuntPass.setItemMeta(shopBlockHuntPass_IM);
 											shopBlockHuntPass.setAmount(
 													W.shop.getFile().getInt(player.getName() + ".blockhuntpass"));
@@ -230,12 +249,15 @@ public class ArenaHandler {
 
 									DisguiseAPI.undisguiseToAll(player);
 
-									ArenaHandler.sendFMessage(arena, ConfigC.normal_joinJoinedArena,
-											"playername-" + player.getName(), "1-" + arena.playersInArena.size(),
-											"2-" + arena.maxPlayers);
+									ArenaHandler.sendFMessage(
+											arena,
+											ConfigC.normal_joinJoinedArena,
+											"playername-" + player.getName(),
+											"1-" + arena.playersInArena.size(),
+											"2-" + arena.maxPlayers
+									);
 									if (arena.playersInArena.size() < arena.minPlayers) {
-										ArenaHandler.sendFMessage(arena, ConfigC.warning_lobbyNeedAtleast,
-												"1-" + arena.minPlayers);
+										ArenaHandler.sendFMessage(arena, ConfigC.warning_lobbyNeedAtleast, "1-" + arena.minPlayers);
 									}
 								} else {
 									MessageM.sendFMessage(player, ConfigC.error_joinArenaIngame);
@@ -274,9 +296,7 @@ public class ArenaHandler {
 		if (arena != null) {
 			if (cleanup) {
 				arena.playersInArena.remove(player);
-				if (arena.seekers.contains(player)) {
-					arena.seekers.remove(player);
-				}
+				arena.seekers.remove(player);
 
 				if ((arena.playersInArena.size() < arena.minPlayers) && arena.gameState.equals(ArenaState.STARTING)) {
 					arena.gameState = ArenaState.WAITING;
@@ -296,7 +316,7 @@ public class ArenaHandler {
 					ArenaHandler.seekersWin(arena);
 				}
 
-				if ((arena.seekers.size() <= 0) && (arena.gameState == ArenaState.INGAME)) {
+				if ((arena.seekers.size() == 0) && (arena.gameState == ArenaState.INGAME)) {
 					Player seeker = arena.playersInArena.get(W.random.nextInt(arena.playersInArena.size()));
 					ArenaHandler.sendFMessage(arena, ConfigC.warning_ingameNEWSeekerChoosen,
 							"seeker-" + seeker.getName());
@@ -356,7 +376,7 @@ public class ArenaHandler {
 					if (W.hiddenLocWater.get(player) != null) {
 						Block pBlock = W.hiddenLoc.get(player).getBlock();
 						if (W.hiddenLocWater.get(player)) {
-							pl.sendBlockChange(pBlock.getLocation(), Material.LEGACY_STATIONARY_WATER, (byte) 0);
+							pl.sendBlockChange(pBlock.getLocation(), Material.WATER, (byte) 0);
 						} else {
 							pl.sendBlockChange(pBlock.getLocation(), Material.AIR, (byte) 0);
 						}
@@ -390,7 +410,7 @@ public class ArenaHandler {
 				for (String command : arena.seekersWinCommands) {
 					Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command.replaceAll("%player%", player.getName()));
 				}
-				if (W.config.getFile().getBoolean("vaultSupport") == true) {
+				if (W.config.getFile().getBoolean("vaultSupport")) {
 					if (BlockHunt.econ != null) {
 						BlockHunt.econ.depositPlayer(player.getName(), arena.seekersTokenWin);
 						MessageM.sendFMessage(player, ConfigC.normal_addedVaultBalance,
@@ -424,8 +444,15 @@ public class ArenaHandler {
 
 	public static void sendFMessage(Arena arena, ConfigC location, String... vars) {
 		for (Player player : arena.playersInArena) {
-			String pMessage = location.config.getFile().get(location.location).toString().replaceAll("%player%",
-					player.getName());
+
+			Object locationObject = location.config.getFile().get(location.location);
+			String locationString = "";
+
+			if (locationObject != null) {
+				locationString = locationObject.toString();
+			}
+
+			String pMessage = locationString.replaceAll("%player%", player.getName());
 			player.sendMessage(MessageM.replaceAll(pMessage, vars));
 		}
 	}
