@@ -258,9 +258,9 @@ public enum ConfigC {
 	error_trueVaultNull ("%TAG%EVault has been enabled in the config.yml but cannot find the 'Vault' plugin! The plugin will not run",
 			W.messages);
 
-	public Object value;
-	public ConfigM config;
-	public String location;
+	public final Object value;
+	public final ConfigM config;
+	public final String location;
 
 	/**
 	 * Makes an object from the list above.
@@ -270,7 +270,7 @@ public enum ConfigC {
 	 * @param config
 	 *            The config file.
 	 */
-	private ConfigC (Object value, ConfigM config) {
+	ConfigC (Object value, ConfigM config) {
 		this.value = value;
 		this.config = config;
 		this.location = this.name().replaceAll("_", ".");
