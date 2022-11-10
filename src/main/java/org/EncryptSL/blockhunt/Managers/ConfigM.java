@@ -1,6 +1,7 @@
 package org.EncryptSL.blockhunt.Managers;
 
 import java.io.File;
+import java.util.Objects;
 
 import org.EncryptSL.blockhunt.BlockHunt;
 import org.EncryptSL.blockhunt.ConfigC;
@@ -103,7 +104,7 @@ public class ConfigM {
 			try {
 				this.file.getParentFile().mkdirs();
 				this.file.createNewFile();
-				if (this.fileLocation == BlockHunt.pdfFile.getName()) {
+				if (Objects.equals(this.fileLocation, BlockHunt.pdfFile.getName())) {
 					W.newFiles.add(this.fileName);
 				} else {
 					W.newFiles.add(this.fileLocation + this.fileName);
