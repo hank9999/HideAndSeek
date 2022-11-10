@@ -13,12 +13,13 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public class OnInventoryClickEvent implements Listener {
 
-    public static void updownButton(Player player, ItemStack item, Arena arena,
-                                    ArenaType at, int option, int max, int min, int add, int remove) {
+    public static void updownButton(Player player, ItemStack item, Arena arena, ArenaType at, int option, int max,
+                                    int min, int add, int remove) {
         if (item.getItemMeta() == null) {
             return;
         }
@@ -58,11 +59,9 @@ public class OnInventoryClickEvent implements Listener {
                         break;
                 }
             } else {
-                MessageM.sendFMessage(player, ConfigC.error_setTooHighNumber,
-                        "max-" + max);
+                MessageM.sendFMessage(player, ConfigC.error_setTooHighNumber, "max-" + max);
             }
-        } else if (item.getItemMeta().getDisplayName()
-                .contains((String) W.messages.get(ConfigC.button_remove2))) {
+        } else if (item.getItemMeta().getDisplayName().contains((String) W.messages.get(ConfigC.button_remove2))) {
             if (option > min) {
                 switch (at) {
                     case maxPlayers:
@@ -97,20 +96,17 @@ public class OnInventoryClickEvent implements Listener {
                         break;
                 }
             } else {
-                MessageM.sendFMessage(player, ConfigC.error_setTooLowNumber,
-                        "min-" + min);
+                MessageM.sendFMessage(player, ConfigC.error_setTooLowNumber, "min-" + min);
             }
         }
     }
 
-    @SuppressWarnings("deprecation")
     @EventHandler(priority = EventPriority.NORMAL)
     public void onInventoryClickEvent(InventoryClickEvent event) {
         Player player = (Player) event.getWhoClicked();
 
         for (Arena arena : W.arenaList) {
-            if (arena.playersInArena.contains(player)
-                    && !arena.seekers.contains(player)) {
+            if (arena.playersInArena.contains(player) && !arena.seekers.contains(player)) {
                 if (event.getSlot() == 8 || event.getSlot() == 39) {
                     event.setCancelled(true);
                 }
@@ -121,26 +117,21 @@ public class OnInventoryClickEvent implements Listener {
             if (event.getView().getTitle().contains("DisguiseBlocks")) {
                 if (event.getCurrentItem() != null) {
                     if (!event.getCurrentItem().getType().isBlock()) {
-                        if (!event.getCurrentItem().getType()
-                                .equals(Material.LEGACY_FLOWER_POT_ITEM)) {
+                        if (!event.getCurrentItem().getType().equals(Material.FLOWER_POT)) {
                             event.setCancelled(true);
-                            MessageM.sendFMessage(player,
-                                    ConfigC.error_setNotABlock);
+                            MessageM.sendFMessage(player, ConfigC.error_setNotABlock);
                         }
                     }
                 }
             } else if (event.getView().getTitle().startsWith("\u00A7r")) {
-                if (event.getView().getTitle().equals(
-                        MessageM.replaceAll("\u00A7r"
-                                + W.config.get(ConfigC.shop_title)))) {
+                if (event.getView().getTitle().equals(MessageM.replaceAll("\u00A7r" + W.config.get(ConfigC.shop_title)))) {
                     event.setCancelled(true);
                     ItemStack item = event.getCurrentItem();
                     if (W.shop.getFile().get(player.getName() + ".tokens") == null) {
                         W.shop.getFile().set(player.getName() + ".tokens", 0);
                         W.shop.save();
                     }
-                    int playerTokens = W.shop.getFile().getInt(
-                            player.getName() + ".tokens");
+                    int playerTokens = W.shop.getFile().getInt(player.getName() + ".tokens");
                     if (item == null)
                         return;
                     if (item.getType().equals(Material.AIR))
@@ -148,31 +139,22 @@ public class OnInventoryClickEvent implements Listener {
                     if (item.getItemMeta() == null) {
                         return;
                     }
-                    if (item.getItemMeta()
-                            .getDisplayName()
-                            .equals(MessageM
-                                    .replaceAll(W.config.get(
-                                                    ConfigC.shop_blockChooserv1Name)
-                                            .toString()))) {
+                    if (item.getItemMeta().getDisplayName().equals(
+                            MessageM.replaceAll(W.config.get(ConfigC.shop_blockChooserv1Name).toString())
+                    )) {
                         if (W.config.getFile().getBoolean("vaultSupport")) {
                             if (BlockHunt.econ != null) {
-                                int vaultBalance = (int) BlockHunt.econ.getBalance(player
-                                        .getName());
+                                int vaultBalance = (int) BlockHunt.econ.getBalance(player);
                                 if (vaultBalance >= W.config.getFile().getInt("blockChooserPrice")) {
                                     W.shop.getFile().set(player.getName() + ".blockchooser", true);
-                                    BlockHunt.econ.depositPlayer(
-                                            player.getName(),
-                                            W.config.getFile().getInt("blockChooserPrice")
-                                    );
+                                    BlockHunt.econ.depositPlayer(player, W.config.getFile().getInt("blockChooserPrice"));
                                     W.shop.save();
-                                    MessageM.sendFMessage(
-                                            player,
+                                    MessageM.sendFMessage(player,
                                             ConfigC.normal_shopBoughtItem,
                                             "itemname-" + W.config.get(ConfigC.shop_blockChooserv1Name)
                                     );
                                 } else {
-                                    MessageM.sendFMessage(player,
-                                            ConfigC.error_shopNeedMoreMoney);
+                                    MessageM.sendFMessage(player, ConfigC.error_shopNeedMoreMoney);
                                 }
                             }
                         } else {
@@ -186,30 +168,21 @@ public class OnInventoryClickEvent implements Listener {
                                 MessageM.sendFMessage(
                                         player,
                                         ConfigC.normal_shopBoughtItem,
-                                        "itemname-"
-                                                + W.config
-                                                .get(ConfigC.shop_blockChooserv1Name));
+                                        "itemname-" + W.config.get(ConfigC.shop_blockChooserv1Name)
+                                );
                             } else {
-                                MessageM.sendFMessage(player,
-                                        ConfigC.error_shopNeedMoreTokens);
+                                MessageM.sendFMessage(player, ConfigC.error_shopNeedMoreTokens);
                             }
                         }
-                    } else if (item
-                            .getItemMeta()
-                            .getDisplayName()
-                            .equals(MessageM.replaceAll(W.config.get(
-                                            ConfigC.shop_BlockHuntPassv2Name)
-                                    .toString()))) {
+                    } else if (item.getItemMeta().getDisplayName().equals(
+                            MessageM.replaceAll(W.config.get(ConfigC.shop_BlockHuntPassv2Name).toString())
+                    )) {
                         if (W.config.getFile().getBoolean("vaultSupport")) {
                             if (BlockHunt.econ != null) {
-                                int vaultBalance = (int) BlockHunt.econ.getBalance(player.getName());
+                                int vaultBalance = (int) BlockHunt.econ.getBalance(player);
                                 if (vaultBalance >= W.config.getFile().getInt("seekerHiderPrice")) {
-                                    if (W.shop.getFile()
-                                            .get(player.getName()
-                                                    + ".blockhuntpass") == null) {
-                                        W.shop.getFile().set(
-                                                player.getName()
-                                                        + ".blockhuntpass", 0);
+                                    if (W.shop.getFile().get(player.getName() + ".blockhuntpass") == null) {
+                                        W.shop.getFile().set(player.getName() + ".blockhuntpass", 0);
                                         W.shop.save();
                                     }
 
@@ -220,16 +193,17 @@ public class OnInventoryClickEvent implements Listener {
                                             (Integer) (o != null ? o : 0) + 1
                                     );
                                     BlockHunt.econ.depositPlayer(
-                                            player.getName(),
-                                            W.config.getFile().getInt("seekerHiderPrice"));
+                                            player,
+                                            W.config.getFile().getInt("seekerHiderPrice")
+                                    );
                                     W.shop.save();
                                     MessageM.sendFMessage(
                                             player,
                                             ConfigC.normal_shopBoughtItem,
-                                            "itemname-" + W.config.get(ConfigC.shop_BlockHuntPassv2Name));
+                                            "itemname-" + W.config.get(ConfigC.shop_BlockHuntPassv2Name)
+                                    );
                                 } else {
-                                    MessageM.sendFMessage(player,
-                                            ConfigC.error_shopNeedMoreMoney);
+                                    MessageM.sendFMessage(player, ConfigC.error_shopNeedMoreMoney);
                                 }
                             }
                         } else {
@@ -249,23 +223,23 @@ public class OnInventoryClickEvent implements Listener {
                                 );
                                 W.shop.getFile().set(
                                         player.getName() + ".tokens",
-                                        playerTokens - W.config.getFile().getInt("seekerHiderPrice"));
+                                        playerTokens - W.config.getFile().getInt("seekerHiderPrice")
+                                );
                                 W.shop.save();
                                 MessageM.sendFMessage(
                                         player,
                                         ConfigC.normal_shopBoughtItem,
-                                        "itemname-" + W.config.get(ConfigC.shop_BlockHuntPassv2Name));
+                                        "itemname-" + W.config.get(ConfigC.shop_BlockHuntPassv2Name)
+                                );
                             } else {
-                                MessageM.sendFMessage(player,
-                                        ConfigC.error_shopNeedMoreTokens);
+                                MessageM.sendFMessage(player, ConfigC.error_shopNeedMoreTokens);
                             }
                         }
                     }
 
                     InventoryHandler.openShop(player);
                 } else if (event.getView().getTitle().contains(
-                        MessageM.replaceAll((String) W.config
-                                .get(ConfigC.shop_blockChooserv1Name)))) {
+                        MessageM.replaceAll((String) W.config.get(ConfigC.shop_blockChooserv1Name)))) {
                     event.setCancelled(true);
                     if (event.getCurrentItem() == null) {
                         return;
@@ -283,21 +257,19 @@ public class OnInventoryClickEvent implements Listener {
                                             .replaceAll("BLOCK", "")
                                             .toLowerCase());
                         } else {
-                            MessageM.sendFMessage(player,
-                                    ConfigC.error_setNotABlock);
+                            MessageM.sendFMessage(player, ConfigC.error_setNotABlock);
                         }
                     }
                 } else if (event.getView().getTitle().contains(
-                        MessageM.replaceAll((String) W.config
-                                .get(ConfigC.shop_BlockHuntPassv2Name)))) {
+                        MessageM.replaceAll((String) W.config.get(ConfigC.shop_BlockHuntPassv2Name)))) {
                     event.setCancelled(true);
                     if (event.getCurrentItem() == null) {
                         return;
                     }
                     if (event.getCurrentItem().getType() != Material.AIR) {
-                        if (event.getCurrentItem().getType()
-                                .equals(Material.WHITE_WOOL)
-                                && event.getCurrentItem().getDurability() == (short) 11) {
+                        if (event.getCurrentItem().getType().equals(Material.WHITE_WOOL)
+                                && event.getCurrentItem().getItemMeta() != null
+                                && ((Damageable) event.getCurrentItem().getItemMeta()).getDamage() == 11) {
                             int i = 0;
                             for (Arena arena : W.arenaList) {
                                 if (arena.playersInArena.contains(player)) {
@@ -311,40 +283,29 @@ public class OnInventoryClickEvent implements Listener {
                                 }
 
                                 if (i >= arena.amountSeekersOnStart) {
-                                    MessageM.sendFMessage(player,
-                                            ConfigC.error_shopMaxSeekersReached);
+                                    MessageM.sendFMessage(player, ConfigC.error_shopMaxSeekersReached);
                                 } else {
                                     W.choosenSeeker.put(player, true);
-                                    player.getInventory().setItemInHand(
-                                            new ItemStack(Material.AIR));
+                                    player.getInventory().setItemInMainHand(new ItemStack(Material.AIR));
                                     player.updateInventory();
-                                    MessageM.sendFMessage(player,
-                                            ConfigC.normal_shopChoosenSeeker);
+                                    MessageM.sendFMessage(player, ConfigC.normal_shopChoosenSeeker);
                                     inv.clear();
-                                    if (W.shop.getFile()
-                                            .getInt(player.getName()
-                                                    + ".blockhuntpass") == 1) {
-                                        W.shop.getFile().set(
-                                                player.getName()
-                                                        + ".blockhuntpass",
-                                                null);
+                                    if (W.shop.getFile().getInt(player.getName() + ".blockhuntpass") == 1) {
+                                        W.shop.getFile().set(player.getName() + ".blockhuntpass", null);
                                         W.shop.save();
                                     } else {
-                                        W.shop.getFile()
-                                                .set(player.getName()
-                                                                + ".blockhuntpass",
-                                                        W.shop.getFile()
-                                                                .getInt(player
-                                                                        .getName()
-                                                                        + ".blockhuntpass") - 1);
+                                        W.shop.getFile().set(
+                                                player.getName() + ".blockhuntpass",
+                                                W.shop.getFile().getInt(player.getName() + ".blockhuntpass") - 1
+                                        );
                                         W.shop.save();
                                     }
                                 }
                             }
 
-                        } else if (event.getCurrentItem().getType()
-                                .equals(Material.WHITE_WOOL)
-                                && event.getCurrentItem().getDurability() == (short) 14) {
+                        } else if (event.getCurrentItem().getType().equals(Material.WHITE_WOOL)
+                                && event.getCurrentItem().getItemMeta() != null
+                                && ((Damageable) event.getCurrentItem().getItemMeta()).getDamage() == 14) {
                             int i = 0;
                             for (Arena arena : W.arenaList) {
                                 if (arena.playersInArena.contains(player)) {
@@ -358,32 +319,21 @@ public class OnInventoryClickEvent implements Listener {
                                 }
 
                                 if (i >= (arena.playersInArena.size() - 1)) {
-                                    MessageM.sendFMessage(player,
-                                            ConfigC.error_shopMaxHidersReached);
+                                    MessageM.sendFMessage(player, ConfigC.error_shopMaxHidersReached);
                                 } else {
                                     W.choosenSeeker.put(player, false);
-                                    player.getInventory().setItemInHand(
-                                            new ItemStack(Material.AIR));
+                                    player.getInventory().setItemInMainHand(new ItemStack(Material.AIR));
                                     player.updateInventory();
-                                    MessageM.sendFMessage(player,
-                                            ConfigC.normal_shopChoosenHiders);
+                                    MessageM.sendFMessage(player, ConfigC.normal_shopChoosenHiders);
                                     inv.clear();
-                                    if (W.shop.getFile()
-                                            .getInt(player.getName()
-                                                    + ".blockhuntpass") == 1) {
-                                        W.shop.getFile().set(
-                                                player.getName()
-                                                        + ".blockhuntpass",
-                                                null);
+                                    if (W.shop.getFile().getInt(player.getName() + ".blockhuntpass") == 1) {
+                                        W.shop.getFile().set(player.getName() + ".blockhuntpass", null);
                                         W.shop.save();
                                     } else {
-                                        W.shop.getFile()
-                                                .set(player.getName()
-                                                                + ".blockhuntpass",
-                                                        W.shop.getFile()
-                                                                .getInt(player
-                                                                        .getName()
-                                                                        + ".blockhuntpass") - 1);
+                                        W.shop.getFile().set(
+                                                player.getName() + ".blockhuntpass",
+                                                W.shop.getFile().getInt(player.getName() + ".blockhuntpass") - 1
+                                        );
                                         W.shop.save();
                                     }
                                 }
@@ -401,8 +351,7 @@ public class OnInventoryClickEvent implements Listener {
                     if (itemMeta == null) {
                         return;
                     }
-                    String arenaName = itemMeta.getDisplayName()
-                            .replaceAll(MessageM.replaceAll("%NSettings of arena: %A"), "");
+                    String arenaName = itemMeta.getDisplayName().replaceAll(MessageM.replaceAll("%NSettings of arena: %A"), "");
 
                     Arena arena = null;
                     for (Arena arena2 : W.arenaList) {
@@ -423,65 +372,52 @@ public class OnInventoryClickEvent implements Listener {
                     if (!item.getItemMeta().hasDisplayName())
                         return;
                     if (item.getType().equals(Material.GOLD_NUGGET)) {
-                        if (item.getItemMeta().getDisplayName()
-                                .contains("maxPlayers")) {
-                            updownButton(player, item, arena,
-                                    ArenaType.maxPlayers, arena.maxPlayers,
-                                    Bukkit.getMaxPlayers(), 2, 1, 1);
-                        } else if (item.getItemMeta().getDisplayName()
-                                .contains("minPlayers")) {
-                            updownButton(player, item, arena,
-                                    ArenaType.minPlayers, arena.minPlayers,
-                                    Bukkit.getMaxPlayers() - 1, 2, 1, 1);
-                        } else if (item.getItemMeta().getDisplayName()
-                                .contains("amountSeekersOnStart")) {
-                            updownButton(player, item, arena,
-                                    ArenaType.amountSeekersOnStart,
-                                    arena.amountSeekersOnStart,
-                                    arena.maxPlayers - 1, 1, 1, 1);
-                        } else if (item.getItemMeta().getDisplayName()
-                                .contains("timeInLobbyUntilStart")) {
-                            updownButton(player, item, arena,
-                                    ArenaType.timeInLobbyUntilStart,
-                                    arena.timeInLobbyUntilStart, 1000, 5, 1, 1);
-                        } else if (item.getItemMeta().getDisplayName()
-                                .contains("waitingTimeSeeker")) {
-                            updownButton(player, item, arena,
-                                    ArenaType.waitingTimeSeeker,
-                                    arena.waitingTimeSeeker, 1000, 5, 1, 1);
-                        } else if (item.getItemMeta().getDisplayName()
-                                .contains("gameTime")) {
-                            updownButton(player, item, arena,
-                                    ArenaType.gameTime, arena.gameTime, 1000,
-                                    5, 1, 1);
-                        } else if (item.getItemMeta().getDisplayName()
-                                .contains("timeUntilHidersSword")) {
-                            updownButton(player, item, arena,
-                                    ArenaType.timeUntilHidersSword,
-                                    arena.timeUntilHidersSword, 1000, 0, 1, 1);
-                        } else if (item.getItemMeta().getDisplayName()
-                                .contains("hidersTokenWin")) {
-                            updownButton(player, item, arena,
-                                    ArenaType.hidersTokenWin,
-                                    arena.hidersTokenWin, 1000, 0, 1, 1);
-                        } else if (item.getItemMeta().getDisplayName()
-                                .contains("seekersTokenWin")) {
-                            updownButton(player, item, arena,
-                                    ArenaType.seekersTokenWin,
-                                    arena.seekersTokenWin, 1000, 0, 1, 1);
-                        } else if (item.getItemMeta().getDisplayName()
-                                .contains("killTokens")) {
-                            updownButton(player, item, arena,
-                                    ArenaType.killTokens, arena.killTokens,
-                                    1000, 0, 1, 1);
+                        if (item.getItemMeta().getDisplayName().contains("maxPlayers")) {
+                            updownButton(player, item, arena, ArenaType.maxPlayers, arena.maxPlayers,
+                                    Bukkit.getMaxPlayers(), 2, 1, 1
+                            );
+                        } else if (item.getItemMeta().getDisplayName().contains("minPlayers")) {
+                            updownButton(
+                                    player, item, arena, ArenaType.minPlayers, arena.minPlayers,
+                                    Bukkit.getMaxPlayers() - 1, 2, 1, 1
+                            );
+                        } else if (item.getItemMeta().getDisplayName().contains("amountSeekersOnStart")) {
+                            updownButton(player, item, arena, ArenaType.amountSeekersOnStart, arena.amountSeekersOnStart,
+                                    arena.maxPlayers - 1, 1, 1, 1
+                            );
+                        } else if (item.getItemMeta().getDisplayName().contains("timeInLobbyUntilStart")) {
+                            updownButton(player, item, arena, ArenaType.timeInLobbyUntilStart,
+                                    arena.timeInLobbyUntilStart, 1000, 5, 1, 1
+                            );
+                        } else if (item.getItemMeta().getDisplayName().contains("waitingTimeSeeker")) {
+                            updownButton(player, item, arena, ArenaType.waitingTimeSeeker, arena.waitingTimeSeeker,
+                                    1000, 5, 1, 1
+                            );
+                        } else if (item.getItemMeta().getDisplayName().contains("gameTime")) {
+                            updownButton(player, item, arena, ArenaType.gameTime, arena.gameTime, 1000, 5, 1, 1);
+                        } else if (item.getItemMeta().getDisplayName().contains("timeUntilHidersSword")) {
+                            updownButton(player, item, arena, ArenaType.timeUntilHidersSword, arena.timeUntilHidersSword,
+                                    1000, 0, 1, 1
+                            );
+                        } else if (item.getItemMeta().getDisplayName().contains("hidersTokenWin")) {
+                            updownButton(player, item, arena, ArenaType.hidersTokenWin, arena.hidersTokenWin, 1000,
+                                    0, 1, 1
+                            );
+                        } else if (item.getItemMeta().getDisplayName().contains("seekersTokenWin")) {
+                            updownButton(player, item, arena, ArenaType.seekersTokenWin, arena.seekersTokenWin,
+                                    1000, 0, 1, 1
+                            );
+                        } else if (item.getItemMeta().getDisplayName().contains("killTokens")) {
+                            updownButton(player, item, arena, ArenaType.killTokens, arena.killTokens, 1000,
+                                    0, 1, 1
+                            );
                         }
 
                         save(arena);
                         InventoryHandler.openPanel(player, arena.arenaName);
 
                     } else if (item.getType().equals(Material.BOOK)) {
-                        if (item.getItemMeta().getDisplayName()
-                                .contains("disguiseBlocks")) {
+                        if (item.getItemMeta().getDisplayName().contains("disguiseBlocks")) {
                             InventoryHandler.openDisguiseBlocks(arena, player);
                         }
                     }
