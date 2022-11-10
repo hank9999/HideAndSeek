@@ -7,10 +7,7 @@ import org.EncryptSL.blockhunt.W;
 import org.EncryptSL.blockhunt.Managers.MessageM;
 import org.EncryptSL.blockhunt.Serializables.LocationSerializable;
 
-import org.bukkit.Effect;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
 
@@ -31,17 +28,19 @@ public class CMDremove extends DefaultCMD {
 										+ args[1]);
 						W.arenas.getFile().set(args[1], null);
 						for (String sign : W.signs.getFile().getKeys(false)) {
-							if (W.signs.getFile().get(sign + ".arenaName")
-									.toString().equalsIgnoreCase(args[1])) {
-								LocationSerializable signLoc = new LocationSerializable(
-										(Location) W.signs.getFile().get(
-												sign + ".location"));
-								signLoc.getBlock().setType(Material.AIR);
-								signLoc.getWorld().playEffect(signLoc,
-										Effect.MOBSPAWNER_FLAMES, 0);
-								signLoc.getWorld().playSound(signLoc,
-										Sound.ENTITY_ENDER_DRAGON_FLAP, 1, 1);
-								W.signs.getFile().set(sign, null);
+							Object o = W.signs.getFile().get(sign + ".arenaName");
+							if (o != null && o.toString().equalsIgnoreCase(args[1])) {
+								Object ls = W.signs.getFile().get(sign + ".location");
+								if (ls != null) {
+									LocationSerializable signLoc = new LocationSerializable((Location) ls);
+									signLoc.getBlock().setType(Material.AIR);
+									World w = signLoc.getWorld();
+									if (w != null) {
+										w.playEffect(signLoc, Effect.MOBSPAWNER_FLAMES, 0);
+										w.playSound(signLoc, Sound.ENTITY_ENDER_DRAGON_FLAP, 1, 1);
+									}
+									W.signs.getFile().set(sign, null);
+								}
 							}
 						}
 
