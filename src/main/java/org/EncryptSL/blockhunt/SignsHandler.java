@@ -81,23 +81,25 @@ public class SignsHandler {
 
 	public static void removeSign(LocationSerializable location) {
 		for (String sign : W.signs.getFile().getKeys(false)) {
-			LocationSerializable loc = new LocationSerializable(
-					(LocationSerializable) W.signs.getFile().get(
-							sign + ".location"));
-			if (loc.equals(location)) {
-				W.signs.getFile().set(sign, null);
-				W.signs.save();
+			LocationSerializable ls = (LocationSerializable) W.signs.getFile().get(sign + ".location");
+			if (ls != null) {
+				LocationSerializable loc = new LocationSerializable(ls);
+				if (loc.equals(location)) {
+					W.signs.getFile().set(sign, null);
+					W.signs.save();
+				}
 			}
 		}
 	}
 
 	public static boolean isSign(LocationSerializable location) {
 		for (String sign : W.signs.getFile().getKeys(false)) {
-			LocationSerializable loc = new LocationSerializable(
-					(LocationSerializable) W.signs.getFile().get(
-							sign + ".location"));
-			if (loc.equals(location)) {
-				return true;
+			LocationSerializable ls = (LocationSerializable) W.signs.getFile().get(sign + ".location");
+			if (ls != null) {
+				LocationSerializable loc = new LocationSerializable(ls);
+				if (loc.equals(location)) {
+					return true;
+				}
 			}
 		}
 
@@ -108,134 +110,106 @@ public class SignsHandler {
 	public static void updateSigns() {
 		W.signs.load();
 		for (String sign : W.signs.getFile().getKeys(false)) {
-			LocationSerializable loc = new LocationSerializable(
-					(LocationSerializable) W.signs.getFile().get(
-							sign + ".location"));
-			if (loc.getBlock().getType().equals(Material.LEGACY_SIGN_POST)
-					|| loc.getBlock().getType().equals(Material.WALL_SIGN)) {
-				Sign signblock = (Sign) loc.getBlock().getState();
-				String[] lines = signblock.getLines();
-				if (sign.contains("leave")) {
-					ArrayList<String> signLines = (ArrayList<String>) W.config
-							.getFile().getList(ConfigC.sign_LEAVE.location);
-					int linecount = 0;
-					for (String line : signLines) {
-						if (linecount <= 3) {
-							signblock.setLine(linecount,
-									MessageM.replaceAll(line));
+			LocationSerializable ls = (LocationSerializable) W.signs.getFile().get(sign + ".location");
+			if (ls != null) {
+				LocationSerializable loc = new LocationSerializable(ls);
+				if (loc.getBlock().getType().equals(Material.OAK_SIGN) || loc.getBlock().getType().equals(Material.OAK_WALL_SIGN)) {
+					Sign signblock = (Sign) loc.getBlock().getState();
+					String[] lines = signblock.getLines();
+					if (sign.contains("leave")) {
+						ArrayList<String> signLines = (ArrayList<String>) W.config.getFile().getList(ConfigC.sign_LEAVE.location);
+						int linecount = 0;
+						if (signLines != null) {
+							for (String line : signLines) {
+								if (linecount <= 3) {
+									signblock.setLine(linecount, MessageM.replaceAll(line));
+								}
+
+								linecount = linecount + 1;
+							}
 						}
+						signblock.update();
+					} else if (sign.contains("shop")) {
+						ArrayList<String> signLines = (ArrayList<String>) W.config.getFile().getList(ConfigC.sign_SHOP.location);
+						int linecount = 0;
+						if (signLines != null) {
+							for (String line : signLines) {
+								if (linecount <= 3) {
+									signblock.setLine(linecount, MessageM.replaceAll(line));
+								}
 
-						linecount = linecount + 1;
-					}
-					signblock.update();
-				} else if (sign.contains("shop")) {
-					ArrayList<String> signLines = (ArrayList<String>) W.config
-							.getFile().getList(ConfigC.sign_SHOP.location);
-					int linecount = 0;
-					for (String line : signLines) {
-						if (linecount <= 3) {
-							signblock.setLine(linecount,
-									MessageM.replaceAll(line));
+								linecount = linecount + 1;
+							}
 						}
+						signblock.update();
+					} else {
+						for (Arena arena : W.arenaList) {
+							if (lines[1].endsWith(arena.arenaName)) {
+								if (arena.gameState.equals(ArenaState.WAITING)) {
+									ArrayList<String> signLines = (ArrayList<String>) W.config.getFile().getList(ConfigC.sign_WAITING.location);
+									int linecount = 0;
+									if (signLines != null) {
+										for (String line : signLines) {
+											if (linecount <= 3) {
+												signblock.setLine(linecount, MessageM.replaceAll(
+														line,
+														"arenaname-" + arena.arenaName,
+														"players-" + arena.playersInArena.size(),
+														"maxplayers-" + arena.maxPlayers,
+														"timeleft-" + arena.timer
+												));
+											}
 
-						linecount = linecount + 1;
-					}
-					signblock.update();
-				} else {
-					for (Arena arena : W.arenaList) {
-						if (lines[1].endsWith(arena.arenaName)) {
-							if (arena.gameState.equals(ArenaState.WAITING)) {
-								ArrayList<String> signLines = (ArrayList<String>) W.config
-										.getFile().getList(
-												ConfigC.sign_WAITING.location);
-								int linecount = 0;
-								if (signLines != null) {
-									for (String line : signLines) {
-										if (linecount <= 3) {
-											signblock
-													.setLine(
-															linecount,
-															MessageM.replaceAll(
-																	line,
-																	"arenaname-"
-																			+ arena.arenaName,
-																	"players-"
-																			+ arena.playersInArena
-																					.size(),
-																	"maxplayers-"
-																			+ arena.maxPlayers,
-																	"timeleft-"
-																			+ arena.timer));
+											linecount = linecount + 1;
 										}
-
-										linecount = linecount + 1;
 									}
-								}
-								signblock.update();
-							} else if (arena.gameState
-									.equals(ArenaState.STARTING)) {
-								ArrayList<String> signLines = (ArrayList<String>) W.config
-										.getFile().getList(
-												ConfigC.sign_STARTING.location);
-								int linecount = 0;
-								if (signLines != null) {
-									for (String line : signLines) {
-										if (linecount <= 3) {
-											signblock
-													.setLine(
-															linecount,
-															MessageM.replaceAll(
-																	line,
-																	"arenaname-"
-																			+ arena.arenaName,
-																	"players-"
-																			+ arena.playersInArena
-																					.size(),
-																	"maxplayers-"
-																			+ arena.maxPlayers,
-																	"timeleft-"
-																			+ arena.timer));
+									signblock.update();
+								} else if (arena.gameState
+										.equals(ArenaState.STARTING)) {
+									ArrayList<String> signLines = (ArrayList<String>) W.config.getFile().getList(ConfigC.sign_STARTING.location);
+									int linecount = 0;
+									if (signLines != null) {
+										for (String line : signLines) {
+											if (linecount <= 3) {
+												signblock.setLine(linecount, MessageM.replaceAll(
+														line,
+														"arenaname-" + arena.arenaName,
+														"players-" + arena.playersInArena.size(),
+														"maxplayers-" + arena.maxPlayers,
+														"timeleft-" + arena.timer
+												));
+											}
+
+											linecount = linecount + 1;
 										}
-
-										linecount = linecount + 1;
 									}
-								}
-								signblock.update();
-							} else if (arena.gameState
-									.equals(ArenaState.INGAME)) {
-								ArrayList<String> signLines = (ArrayList<String>) W.config
-										.getFile().getList(
-												ConfigC.sign_INGAME.location);
-								int linecount = 0;
-								if (signLines != null) {
-									for (String line : signLines) {
-										if (linecount <= 3) {
-											signblock
-													.setLine(
-															linecount,
-															MessageM.replaceAll(
-																	line,
-																	"arenaname-"
-																			+ arena.arenaName,
-																	"players-"
-																			+ arena.playersInArena
-																					.size(),
-																	"maxplayers-"
-																			+ arena.maxPlayers,
-																	"timeleft-"
-																			+ arena.timer));
+									signblock.update();
+								} else if (arena.gameState.equals(ArenaState.INGAME)) {
+									ArrayList<String> signLines = (ArrayList<String>) W.config.getFile().getList(ConfigC.sign_INGAME.location);
+									int linecount = 0;
+									if (signLines != null) {
+										for (String line : signLines) {
+											if (linecount <= 3) {
+												signblock.setLine(linecount, MessageM.replaceAll(
+														line,
+														"arenaname-" + arena.arenaName,
+														"players-" + arena.playersInArena.size(),
+														"maxplayers-" + arena.maxPlayers,
+														"timeleft-" + arena.timer
+												));
+											}
+
+											linecount = linecount + 1;
 										}
-
-										linecount = linecount + 1;
 									}
+									signblock.update();
 								}
-								signblock.update();
 							}
 						}
 					}
+				} else {
+					removeSign(loc);
 				}
-			} else {
-				removeSign(loc);
 			}
 		}
 	}
