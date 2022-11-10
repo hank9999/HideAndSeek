@@ -15,6 +15,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 public class OnInventoryCloseEvent implements Listener {
 
@@ -22,37 +23,40 @@ public class OnInventoryCloseEvent implements Listener {
 	public void onInventoryCloseEvent(InventoryCloseEvent event) {
 		Inventory inv = event.getInventory();
 		if (inv.getType().equals(InventoryType.CHEST)) {
-			if (inv.getName().contains("DisguiseBlocks")) {
-				String arenaname = inv
-						.getItem(0)
-						.getItemMeta()
-						.getDisplayName()
-						.replaceAll(
-								MessageM.replaceAll("%NDisguiseBlocks of arena: %A"),
-								"");
+			if (event.getView().getTitle().contains("DisguiseBlocks")) {
 
-				Arena arena = null;
-				for (Arena arena2 : W.arenaList) {
-					if (arena2.arenaName.equalsIgnoreCase(arenaname)) {
-						arena = arena2;
-					}
-				}
+				ItemStack i = inv.getItem(0);
 
-				ArrayList<ItemStack> blocks = new ArrayList<ItemStack>();
-				for (ItemStack item : inv.getContents()) {
-					if (item != null) {
-						if (!item.getType().equals(Material.PAPER)) {
-							if (item.getType().equals(Material.LEGACY_FLOWER_POT_ITEM)) {
-								blocks.add(new ItemStack(Material.FLOWER_POT));
-							} else {
-								blocks.add(item);
+				if (i != null) {
+					ItemMeta im = i.getItemMeta();
+					if (im != null) {
+						String arenaname = im.getDisplayName().replaceAll(MessageM.replaceAll("%NDisguiseBlocks of arena: %A"), "");
+						Arena arena = null;
+						for (Arena arena2 : W.arenaList) {
+							if (arena2.arenaName.equalsIgnoreCase(arenaname)) {
+								arena = arena2;
 							}
+							ArrayList<ItemStack> blocks = new ArrayList<>();
+							for (ItemStack item : inv.getContents()) {
+								if (item != null) {
+									if (!item.getType().equals(Material.PAPER)) {
+										if (item.getType().equals(Material.FLOWER_POT)) {
+											blocks.add(new ItemStack(Material.FLOWER_POT));
+										} else {
+											blocks.add(item);
+										}
+									}
+								}
+							}
+
+							if (arena != null) {
+								arena.disguiseBlocks = blocks;
+							}
+							save(arena);
 						}
 					}
 				}
 
-				arena.disguiseBlocks = blocks;
-				save(arena);
 			}
 		}
 	}
