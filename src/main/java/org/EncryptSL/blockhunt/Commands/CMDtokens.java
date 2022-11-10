@@ -33,7 +33,7 @@ public class CMDtokens extends DefaultCMD {
 			String playerName = args[2];
 			int amount = 0;
 			try {
-				amount = Integer.valueOf(args[3]);
+				amount = Integer.parseInt(args[3]);
 			} catch (NumberFormatException e) {
 				MessageM.sendFMessage(player, ConfigC.error_notANumber, "1-"
 						+ args[3]);
