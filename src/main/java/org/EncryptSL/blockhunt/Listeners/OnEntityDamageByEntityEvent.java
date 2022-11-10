@@ -2,6 +2,8 @@ package org.EncryptSL.blockhunt.Listeners;
 
 import org.bukkit.GameMode;
 import org.bukkit.Sound;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -46,20 +48,26 @@ public class OnEntityDamageByEntityEvent implements Listener {
 							player.getWorld().playSound(player.getLocation(), Sound.ENTITY_PLAYER_HURT, 1, 1);
 
 							if (event.getDamage() >= player.getHealth()) {
-								player.setHealth(player.getMaxHealth());
+								AttributeInstance attributeInstance = player.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+								player.setHealth(attributeInstance != null ? attributeInstance.getDefaultValue() : 20.0);
 								event.setCancelled(true);
 
 								DisguiseAPI.undisguiseToAll(player);
 								W.pBlock.remove(player);
 
 								if (!arena.seekers.contains(player)) {
-									if (W.shop.getFile().get(damager.getName() + ".tokens") == null) {
+									if (damager != null && W.shop.getFile().get(damager.getName() + ".tokens") == null) {
 										W.shop.getFile().set(damager.getName() + ".tokens", 0);
 										W.shop.save();
 									}
-									int damagerTokens = W.shop.getFile().getInt(damager.getName() + ".tokens");
-									W.shop.getFile().set(damager.getName() + ".tokens",
-											damagerTokens + arena.killTokens);
+									int damagerTokens = 0;
+									if (damager != null) {
+										damagerTokens = W.shop.getFile().getInt(damager.getName() + ".tokens");
+									}
+									if (damager != null) {
+										W.shop.getFile().set(damager.getName() + ".tokens",
+												damagerTokens + arena.killTokens);
+									}
 									W.shop.save();
 
 									MessageM.sendFMessage(damager, ConfigC.normal_addedToken,
