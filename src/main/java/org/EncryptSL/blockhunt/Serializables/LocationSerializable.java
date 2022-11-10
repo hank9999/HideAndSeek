@@ -26,9 +26,14 @@ public class LocationSerializable extends Location implements
 
 	@Override
 	public boolean equals(Object o) {
-		if (o instanceof LocationSerializable || o instanceof Location) {
+		if (o instanceof Location) {
 			Location loc = (Location) o;
-			return loc.getWorld().getName().equals(getWorld().getName())
+			World locW = loc.getWorld();
+			World w = getWorld();
+			if (locW == null || w == null) {
+				return false;
+			}
+			return locW.getName().equals(w.getName())
 					&& loc.getX() == getX() && loc.getY() == getY()
 					&& loc.getZ() == getZ() && loc.getYaw() == getYaw()
 					&& loc.getPitch() == getPitch();
@@ -38,8 +43,8 @@ public class LocationSerializable extends Location implements
 
 	@Override
 	public Map<String, Object> serialize() {
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("w", getWorld().getName());
+		Map<String, Object> map = new HashMap<>();
+		map.put("w", getWorld() != null ? getWorld().getName() : "");
 		map.put("x", getX());
 		map.put("y", getY());
 		map.put("z", getZ());
@@ -56,12 +61,14 @@ public class LocationSerializable extends Location implements
 			MessageM.sendMessage(
 					null,
 					"%EError deserializing LocationSerializable - world not found! (%A%w%%E)",
-					"w-" + w);
+					"w-null");
 			return null;
 		}
-		return new LocationSerializable(w, (Double) M.g(map, "x", 0D),
-				(Double) M.g(map, "y", 0D), (Double) M.g(map, "z", 0D),
-				((Double) M.g(map, "a", 0D)).floatValue(), ((Double) M.g(map,
-						"p", 0D)).floatValue());
+		return new LocationSerializable(w,
+				(Double) M.g(map, "x", 0D),
+				(Double) M.g(map, "y", 0D),
+				(Double) M.g(map, "z", 0D),
+				((Double) M.g(map, "a", 0D)).floatValue(),
+				((Double) M.g(map, "p", 0D)).floatValue());
 	}
 }
