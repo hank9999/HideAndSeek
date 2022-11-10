@@ -23,13 +23,18 @@ public class OnPlayerCommandPreprocessEvent implements Listener {
 		for (Arena arena : W.arenaList) {
 			if (arena.playersInArena.contains(player)) {
 				String m = event.getMessage();
-				if (m.startsWith("/blockhunt") || m.startsWith("/bh")
+				if (m.startsWith("/blockhunt")
+						|| m.startsWith("/bh")
 						|| m.startsWith("/seekandfind")
-						|| m.startsWith("/seekandfind") || m.startsWith("/saf")
-						|| m.startsWith("/sf") || m.startsWith("/hideandseek")
-						|| m.startsWith("/has") || m.startsWith("/hs")
-						|| m.startsWith("/ban") || m.startsWith("/kick")
-						|| m.startsWith("/tempban") || m.startsWith("/mute")
+						|| m.startsWith("/saf")
+						|| m.startsWith("/sf")
+						|| m.startsWith("/hideandseek")
+						|| m.startsWith("/has")
+						|| m.startsWith("/hs")
+						|| m.startsWith("/ban")
+						|| m.startsWith("/kick")
+						|| m.startsWith("/tempban")
+						|| m.startsWith("/mute")
 						|| m.startsWith("/reload")) {
 					return;
 				}
