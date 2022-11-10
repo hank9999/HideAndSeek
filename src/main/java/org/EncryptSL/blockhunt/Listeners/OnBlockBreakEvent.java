@@ -24,8 +24,9 @@ public class OnBlockBreakEvent implements Listener {
 			}
 		}
 
-		if (event.getBlock().equals(Material.LEGACY_SIGN_POST)
-				|| event.getBlock().equals(Material.WALL_SIGN)) {
+
+		if (event.getBlock().getBlockData().getMaterial().equals(Material.OAK_SIGN)
+				|| event.getBlock().getBlockData().getMaterial().equals(Material.OAK_WALL_SIGN)) {
 			if (!PermissionsM.hasPerm(player, Permissions.signcreate, true)) {
 				event.setCancelled(true);
 			}
