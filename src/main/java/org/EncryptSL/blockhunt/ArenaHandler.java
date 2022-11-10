@@ -7,7 +7,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.block.Block;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -20,7 +23,6 @@ import org.EncryptSL.blockhunt.Managers.MessageM;
 import org.EncryptSL.blockhunt.Managers.PermissionsM;
 import org.EncryptSL.blockhunt.Serializables.LocationSerializable;
 
-@SuppressWarnings("deprecation")
 public class ArenaHandler {
 	public static void hidersWin(Arena arena) {
 		StringBuilder hidersLeft = new StringBuilder();
@@ -44,7 +46,7 @@ public class ArenaHandler {
 					if (W.config.getFile().getBoolean("vaultSupport")) {
 						if (BlockHunt.econ != null) {
 							if (arena.seekers.contains(player)) {
-								BlockHunt.econ.depositPlayer(player.getName(), arena.hidersTokenWin);
+								BlockHunt.econ.depositPlayer(player, arena.hidersTokenWin);
 								MessageM.sendFMessage(player, ConfigC.normal_addedVaultBalance,
 										"amount-" + arena.hidersTokenWin);
 							}
@@ -155,7 +157,8 @@ public class ArenaHandler {
 										player.removePotionEffect(pe.getType());
 									}
 									player.setFoodLevel(20);
-									player.setHealth(player.getMaxHealth());
+									AttributeInstance attributeInstance = player.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+									player.setHealth(attributeInstance != null ? attributeInstance.getDefaultValue() : 20.0);
 									player.setLevel(arena.timer);
 									player.setExp(0);
 									player.getInventory().clear();
@@ -171,11 +174,11 @@ public class ArenaHandler {
 									// they join
 									for (Player otherplayer : arena.playersInArena) {
 										if (otherplayer.canSee(player)) {
-											otherplayer.showPlayer(player);
+											otherplayer.showPlayer(BlockHunt.plugin, player);
 										}
 										
 										if (player.canSee(otherplayer)) {
-											player.showPlayer(otherplayer);
+											player.showPlayer(BlockHunt.plugin, otherplayer);
 										}
 									}
 
@@ -323,7 +326,7 @@ public class ArenaHandler {
 					ArenaHandler.sendFMessage(arena, ConfigC.normal_ingameSeekerChoosen, "seeker-" + seeker.getName());
 					DisguiseAPI.undisguiseToAll(seeker);
 					for (Player pl : Bukkit.getOnlinePlayers()) {
-						pl.showPlayer(seeker);
+						pl.showPlayer(BlockHunt.plugin, seeker);
 					}
 					seeker.getInventory().clear();
 					arena.seekers.add(seeker);
@@ -335,11 +338,11 @@ public class ArenaHandler {
 					// they join
 					for (Player otherplayer : arena.playersInArena) {
 						if (otherplayer.canSee(player)) {
-							otherplayer.showPlayer(player);
+							otherplayer.showPlayer(BlockHunt.plugin, player);
 						}
 						
 						if (player.canSee(otherplayer)) {
-							player.showPlayer(otherplayer);
+							player.showPlayer(BlockHunt.plugin, otherplayer);
 						}
 					}
 				}
@@ -371,14 +374,16 @@ public class ArenaHandler {
 			W.pData.remove(player);
 
 			for (Player pl : Bukkit.getOnlinePlayers()) {
-				pl.showPlayer(player);
+				pl.showPlayer(BlockHunt.plugin, player);
 				if (W.hiddenLoc.get(player) != null) {
 					if (W.hiddenLocWater.get(player) != null) {
 						Block pBlock = W.hiddenLoc.get(player).getBlock();
 						if (W.hiddenLocWater.get(player)) {
-							pl.sendBlockChange(pBlock.getLocation(), Material.WATER, (byte) 0);
+							BlockData blockData = Material.WATER.createBlockData(String.valueOf(0));
+							pl.sendBlockChange(pBlock.getLocation(), blockData);
 						} else {
-							pl.sendBlockChange(pBlock.getLocation(), Material.AIR, (byte) 0);
+							BlockData blockData = Material.AIR.createBlockData(String.valueOf(0));
+							pl.sendBlockChange(pBlock.getLocation(), blockData);
 						}
 					}
 				}
@@ -412,7 +417,7 @@ public class ArenaHandler {
 				}
 				if (W.config.getFile().getBoolean("vaultSupport")) {
 					if (BlockHunt.econ != null) {
-						BlockHunt.econ.depositPlayer(player.getName(), arena.seekersTokenWin);
+						BlockHunt.econ.depositPlayer(player, arena.seekersTokenWin);
 						MessageM.sendFMessage(player, ConfigC.normal_addedVaultBalance,
 								"amount-" + arena.seekersTokenWin);
 					}
