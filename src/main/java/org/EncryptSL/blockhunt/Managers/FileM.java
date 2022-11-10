@@ -1,11 +1,10 @@
 package org.EncryptSL.blockhunt.Managers;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
 
 public class FileM {
 	/*
@@ -19,19 +18,21 @@ public class FileM {
 				// Bukkit.broadcastMessage("Directory copied from " + src
 				// + "  to " + dest);
 			}
-			String files[] = src.list();
+			String[] files = src.list();
 
-			for (String file : files) {
-				File srcFile = new File(src, file);
-				File destFile = new File(dest, file);
-				if (!srcFile.getName().equals("uid.dat")) {
-					copyFolder(srcFile, destFile);
+			if (files != null) {
+				for (String file : files) {
+					File srcFile = new File(src, file);
+					File destFile = new File(dest, file);
+					if (!srcFile.getName().equals("uid.dat")) {
+						copyFolder(srcFile, destFile);
+					}
 				}
 			}
 
 		} else {
-			InputStream in = new FileInputStream(src);
-			OutputStream out = new FileOutputStream(dest);
+			InputStream in = Files.newInputStream(src.toPath());
+			OutputStream out = Files.newOutputStream(dest.toPath());
 
 			byte[] buffer = new byte[1024];
 
@@ -49,18 +50,21 @@ public class FileM {
 
 	public static void delete(File file) throws IOException {
 		if (file.isDirectory()) {
-
-			if (file.list().length == 0) {
+			String[] lst = file.list();
+			if (lst != null && lst.length == 0) {
 				file.delete();
 			} else {
-				String files[] = file.list();
+				String[] files = file.list();
 
-				for (String temp : files) {
-					File fileDelete = new File(file, temp);
-					delete(fileDelete);
+				if (files != null) {
+					for (String temp : files) {
+						File fileDelete = new File(file, temp);
+						delete(fileDelete);
+					}
 				}
 
-				if (file.list().length == 0) {
+				String[] lst2 = file.list();
+				if (lst2 != null && lst2.length == 0) {
 					file.delete();
 				}
 			}
