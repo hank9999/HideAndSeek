@@ -38,47 +38,37 @@ public class CMDhelp extends DefaultCMD {
 			maxPages = 1;
 		}
 
+		int page = 1;
 		if (args.length == 1) {
-			int page = 1;
-			MessageM.sendFMessage(player, ConfigC.chat_headerhigh, "header-"
-					+ BlockHunt.pdfFile.getName() + " %Nhelp page %A"
-					+ page + "%N/%A" + maxPages);
+			MessageM.sendFMessage(
+					player,
+					ConfigC.chat_headerhigh,
+					"header-" + BlockHunt.pdfFile.getName() + " %Nhelp page %A" + page + "%N/%A" + maxPages
+			);
 			int i = 1;
 			for (CommandM command : W.commands) {
 				if (i <= 4) {
 					if (command.usage != null) {
-						if (PermissionsM.hasPerm(player, command.permission,
-								false)) {
+						if (PermissionsM.hasPerm(player, command.permission, false)) {
 							MessageM.sendMessage(
 									player,
-									"%A"
-											+ command.usage
-											+ "%N - "
-											+ W.messages.getFile().get(
-													command.help.location));
+									"%A" + command.usage + "%N - " + W.messages.getFile().get(command.help.location)
+							);
 						} else {
 							MessageM.sendMessage(
 									player,
-									"%W"
-											+ command.usage
-											+ "%N - "
-											+ W.messages.getFile().get(
-													command.help.location));
+									"%W" + command.usage + "%N - " + W.messages.getFile().get(command.help.location)
+							);
 						}
 						i = i + 1;
 					}
 				}
 			}
 
-			MessageM.sendFMessage(player, ConfigC.chat_headerhigh,
-					"header-&oHelp Page");
 		} else {
-			int page = 1;
 			try {
-				page = Integer.valueOf(args[1]);
-			} catch (NumberFormatException e) {
-				page = 1;
-			}
+				page = Integer.parseInt(args[1]);
+			} catch (NumberFormatException ignored) {}
 
 			if (maxPages < page) {
 				maxPages = page;
@@ -98,28 +88,21 @@ public class CMDhelp extends DefaultCMD {
 									command.permission, false)) {
 								MessageM.sendMessage(
 										player,
-										"%A"
-												+ command.usage
-												+ "%N - "
-												+ W.messages.getFile().get(
-														command.help.location));
+										"%A" + command.usage + "%N - " + W.messages.getFile().get(command.help.location)
+								);
 							} else {
 								MessageM.sendMessage(
 										player,
-										"%W"
-												+ command.usage
-												+ "%N - "
-												+ W.messages.getFile().get(
-														command.help.location));
+										"%W" + command.usage + "%N - " + W.messages.getFile().get(command.help.location)
+								);
 							}
 						}
 						i = i + 1;
 					}
 				}
 			}
-			MessageM.sendFMessage(player, ConfigC.chat_headerhigh,
-					"header-&oHelp Page");
 		}
+		MessageM.sendFMessage(player, ConfigC.chat_headerhigh, "header-&oHelp Page");
 		return true;
 	}
 }
