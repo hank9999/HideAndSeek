@@ -57,16 +57,19 @@ public class MessageM {
 	 */
 	public static void sendFMessage(Player player, ConfigC location,
 			String... vars) {
-		if (player == null) {
-			Bukkit.getConsoleSender().sendMessage(
-					MessageM.replaceAll(
-							location.config.getFile().get(location.location)
-									.toString()
-									.replaceAll("%player%", "Console"), vars));
-		} else {
-			player.sendMessage(MessageM.replaceAll(
-					location.config.getFile().get(location.location).toString()
-							.replaceAll("%player%", player.getName()), vars));
+		Object o = location.config.getFile().get(location.location);
+		if (o != null) {
+			if (player == null) {
+				Bukkit.getConsoleSender().sendMessage(MessageM.replaceAll(
+						o.toString().replaceAll("%player%", "Console"),
+						vars
+				));
+			} else {
+				player.sendMessage(MessageM.replaceAll(
+						o.toString().replaceAll("%player%", player.getName()),
+						vars
+				));
+			}
 		}
 	}
 
@@ -104,21 +107,25 @@ public class MessageM {
 	 *            player.getName();
 	 */
 	public static void broadcastFMessage(ConfigC location, String... vars) {
-		for (Player player : Bukkit.getOnlinePlayers()) {
-			// String pMessage =
-			// location.config.getFile().get(location.location)
-			// .toString().replaceAll("%player%", player.getName());
-			player.sendMessage(MessageM.replaceAll(
-					location.config.getFile().get(location.location).toString()
-							.replaceAll("%player%", player.getName()), vars));
+		Object o = location.config.getFile().get(location.location);
+		if (o != null) {
+			for (Player player : Bukkit.getOnlinePlayers()) {
+				// String pMessage =
+				// location.config.getFile().get(location.location)
+				// .toString().replaceAll("%player%", player.getName());
+				player.sendMessage(MessageM.replaceAll(
+						o.toString().replaceAll("%player%", player.getName()),
+						vars
+				));
+			}
+			// String message = location.config.getFile().get(location.location)
+			// .toString().replaceAll("%player%", "Console");
+			Bukkit.getConsoleSender().sendMessage(MessageM.replaceAll(
+					o.toString().replaceAll("%player%", "Console"),
+					vars
+			));
 		}
-		// String message = location.config.getFile().get(location.location)
-		// .toString().replaceAll("%player%", "Console");
-		Bukkit.getConsoleSender().sendMessage(
-				MessageM.replaceAll(
-						location.config.getFile().get(location.location)
-								.toString().replaceAll("%player%", "Console"),
-						vars));
+
 	}
 
 	/**
@@ -205,9 +212,7 @@ public class MessageM {
 		}
 
 		public static String TAG() {
-			return (String) W.config.get(ConfigC.chat_header)
-					+ (String) W.config.get(ConfigC.chat_tag)
-					+ (String) W.config.get(ConfigC.chat_normal);
+			return W.config.get(ConfigC.chat_header) + (String) W.config.get(ConfigC.chat_tag) + W.config.get(ConfigC.chat_normal);
 		}
 	}
 }
